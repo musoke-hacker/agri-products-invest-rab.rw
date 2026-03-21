@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open App in Chrome",
+            "url": "http://localhost:3000/login",
+            
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Start Next.js Dev Server",
+            "runtimeExecutable": "E:\\PROGRAMS\\node.exe",
+            "runtimeArgs": [
+                "E:\\PROGRAMS\\node_modules\\npm\\bin\\npm-cli.js",
+                "run",
+                "dev"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"]
+        }
+    ],
+    "compounds": [
+        {
+            "name": "🌱 Start & Launch App",
+            "configurations": ["Start Next.js Dev Server", "Open App in Chrome"]
+        }
+    ]
+}

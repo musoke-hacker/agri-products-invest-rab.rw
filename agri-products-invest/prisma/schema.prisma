@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                    String         @id @default(cuid())
+  phone                 String         @unique
+  countryCode           String
+  password              String
+  balance               Float          @default(0.0)
+  totalInvestment       Float          @default(0.0)
+  totalEarnings         Float          @default(0.0)
+  todayEarnings         Float          @default(0.0)
+  referralCode          String         @unique
+  referredBy            String?
+  registrationBonusClaimed Boolean     @default(false)
+  lastCheckIn           DateTime?
+  checkInCount          Int            @default(0)
+  role                  String         @default("USER") // USER, ADMIN
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  investments           Investment[]
+  transactions          Transaction[]
+  notifications         Notification[]
+}
+
+model Product {
+  id           String       @id @default(cuid())
+  code         String       @unique
+  name         String
+  image        String
+  price        Float
+  dailyIncome  Float
+  cycleIncome  Float
+  status       String       @default("Available") // Hot, Available
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  investments  Investment[]
+}
+
+model Investment {
+  id               String   @id @default(cuid())
+  userId           String
+  productId        String
+  amount           Float
+  startDate        DateTime @default(now())
+  endDate          DateTime
+  lastEarningsAt   DateTime @default(now())
+  nextEarningsAt   DateTime
+  status           String   @default("Active") // Active, Completed
+  autoReinvest     Boolean  @default(false)
+  cycleCount       Int      @default(0)
+  user             User     @relation(fields: [userId], references: [id])
+  product          Product  @relation(fields: [productId], references: [id])
+}
+
+model Transaction {
+  id           String   @id @default(cuid())
+  userId       String
+  type         String   // DEPOSIT, WITHDRAWAL, BONUS, EARNINGS, REFERRAL
+  amount       Float
+  status       String   @default("PENDING") // PENDING, PROCESSING, SUCCESSFUL, REJECTED
+  reference    String?  // Mobile money transaction reference
+  notes        String?
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  message   String
+  type      String   @default("IN_APP") // IN_APP, SMS
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}

@@ -1,0 +1,10 @@
+Add-Type -AssemblyName System.Drawing
+$orig = [System.Drawing.Image]::FromFile('c:\xampp\htdocs\final project\public\partners.png')
+$bmp = New-Object System.Drawing.Bitmap(250, 150)
+$g = [System.Drawing.Graphics]::FromImage($bmp)
+$rect = New-Object System.Drawing.Rectangle(0, 0, 250, 150)
+$g.DrawImage($orig, $rect, 0, 0, 250, 150, [System.Drawing.GraphicsUnit]::Pixel)
+$bmp.Save('c:\xampp\htdocs\final project\public\partners-cropped.png', [System.Drawing.Imaging.ImageFormat]::Png)
+$g.Dispose()
+$bmp.Dispose()
+$orig.Dispose()

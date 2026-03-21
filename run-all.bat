@@ -1,0 +1,6 @@
+@echo off
+echo Running Seed...
+E:\PROGRAMS\node.exe E:\PROGRAMS\node_modules\npm\bin\npx-cli.js prisma db seed
+echo Starting Server...
+start "" ".\start-app.bat"
+exit
