@@ -216,11 +216,10 @@ export default function AdminDashboard() {
               </div>
             ))}
          </div>     {/* end PENDING list */}
-            </div>    {/* end inner column */}
-          </div>    {/* end outer column */}
+         </div>    {/* Closes the main conditional div */}
        )}
 
-       <style jsx>{`
+       <style>{`
          @keyframes spin {
            from { transform: rotate(0deg); }
            to { transform: rotate(360deg); }
