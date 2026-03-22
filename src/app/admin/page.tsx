@@ -215,8 +215,8 @@ export default function AdminDashboard() {
                 </div>
               </div>
             ))}
-         </div>     {/* end PENDING list */}
-         </div>    {/* Closes the main conditional div */}
+         </div>
+         </div>
        )}
 
        <style>{`
