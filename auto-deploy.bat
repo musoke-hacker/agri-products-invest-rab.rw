@@ -15,3 +15,4 @@ git remote set-url origin https://github.com/musoke-hacker/agri-products-invest-
 git push origin main --force
 
 echo ✅ Deployment Finished!
+pause

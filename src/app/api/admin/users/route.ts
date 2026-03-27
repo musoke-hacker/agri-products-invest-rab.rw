@@ -19,7 +19,9 @@ export async function GET() {
         countryCode: true,
         role: true,
         totalInvestment: true,
-        totalEarnings: true
+        totalEarnings: true,
+        referralCode: true,
+        referredBy: true
       }
     });
 
