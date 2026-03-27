@@ -7,25 +7,23 @@ export async function GET() {
     const authUser = await getAuthUser();
     if (!authUser || authUser.role !== 'ADMIN') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const users = await prisma.user.findMany({
+    const transactions = await prisma.transaction.findMany({
       orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        phone: true,
-        name: true,
-        profileImage: true,
-        createdAt: true,
-        balance: true,
-        countryCode: true,
-        role: true,
-        totalInvestment: true,
-        totalEarnings: true
+      include: {
+        user: {
+          select: {
+            id: true,
+            phone: true,
+            name: true,
+            role: true
+          }
+        }
       }
     });
 
-    return NextResponse.json(users);
+    return NextResponse.json(transactions);
   } catch (error) {
-    console.error('Users error:', error);
+    console.error('Transactions error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
