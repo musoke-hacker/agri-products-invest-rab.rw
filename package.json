@@ -11,9 +11,9 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
-    "next": "16.1.6",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "next": "15.1.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "lucide-react": "^0.446.0",
     "@prisma/client": "^5.20.0",
     "jsonwebtoken": "^9.0.2",
@@ -27,7 +27,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/bcryptjs": "^2.4.6",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "15.1.0",
     "typescript": "^5",
     "prisma": "^5.20.0",
     "tsx": "^4.19.1"
