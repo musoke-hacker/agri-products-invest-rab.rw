@@ -19,6 +19,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div style={{ paddingBottom: '80px' }}>
+      {/* PWA Install Notice */}
+      <div style={{ 
+        background: 'linear-gradient(90deg, #1b5e38 0%, #083d22 100%)', 
+        color: 'white', 
+        padding: '0.6rem 1rem', 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        fontSize: '0.75rem',
+        fontWeight: '700',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '1rem' }}>📲</span>
+          <span>Install Official App for Faster Access</span>
+        </div>
+        <button 
+          onClick={() => alert('Steps to install:\n1. Open your browser menu (3 dots or share icon)\n2. Tap "Add to Home Screen"\n3. Enjoy high-speed access!')}
+          style={{ background: 'white', color: 'var(--primary-dark)', border: 'none', padding: '0.3rem 0.8rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: '800', cursor: 'pointer' }}>
+          INSTALL NOW
+        </button>
+      </div>
+
       {children}
       
       <nav className="tab-bar">
