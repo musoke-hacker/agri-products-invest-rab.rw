@@ -267,6 +267,7 @@ export default function AdminDashboard() {
            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
               <thead>
                 <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                  <th style={{ padding: '0.85rem 1rem', fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-muted)' }}>PIC</th>
                   <th style={{ padding: '0.85rem 1rem', fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-muted)' }}>CLIENT</th>
                   <th style={{ padding: '0.85rem 1rem', fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-muted)' }}>BALANCE</th>
                   <th style={{ padding: '0.85rem 1rem', fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-muted)' }}>INVESTED</th>
@@ -277,6 +278,17 @@ export default function AdminDashboard() {
               <tbody>
                 {filteredUsers.map(u => (
                   <tr key={u.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '0.5rem 1rem' }}>
+                      <div style={{ width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden', background: '#f1f5f9', border: '1px solid #e2e8f0' }}>
+                        {u.profileImage ? (
+                          <img src={u.profileImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: '#94a3b8', fontWeight: 800 }}>
+                            {u.phone.slice(-2)}
+                          </div>
+                        )}
+                      </div>
+                    </td>
                     <td style={{ padding: '1rem' }}>
                       <p style={{ fontWeight: 700, fontSize: '0.85rem' }}>{u.phone}</p>
                       <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{u.name || 'No Name'}</p>

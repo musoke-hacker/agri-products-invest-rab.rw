@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: "AGRI-PRODUCTS INVEST EXCHANGE",
   description: "Modernizing Agriculture Investment in East Africa",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/agroforestry-team.png",
+    apple: "/agroforestry-team.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

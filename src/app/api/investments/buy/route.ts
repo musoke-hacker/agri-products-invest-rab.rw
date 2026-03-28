@@ -21,9 +21,8 @@ export async function POST(req: NextRequest) {
     const startDate = new Date();
     const endDate = addDays(startDate, 35);
 
-    // Atomic transaction for investment
-    await prisma.$transaction([
-      // Deduct balance
+    const operations: any[] = [
+      // 1. Deduct user balance
       prisma.user.update({
         where: { id: user.id },
         data: {
@@ -31,7 +30,7 @@ export async function POST(req: NextRequest) {
           totalInvestment: { increment: product.price },
         },
       }),
-      // Create investment
+      // 2. Create investment
       prisma.investment.create({
         data: {
           userId: user.id,
@@ -43,7 +42,7 @@ export async function POST(req: NextRequest) {
           status: 'Active',
         },
       }),
-      // Log transaction
+      // 3. Log investment transaction
       prisma.transaction.create({
         data: {
           userId: user.id,
@@ -53,7 +52,44 @@ export async function POST(req: NextRequest) {
           notes: `Invested in ${product.name} (${product.code})`,
         },
       }),
-    ]);
+    ];
+
+    // 4. Handle referral bonus (1000 RWF)
+    if (user.referredBy) {
+      const referrer = await prisma.user.findFirst({
+        where: { referralCode: user.referredBy }
+      });
+
+      if (referrer) {
+        operations.push(
+          // Credit referrer balance
+          prisma.user.update({
+            where: { id: referrer.id },
+            data: { balance: { increment: 1000.0 } }
+          }),
+          // Log bonus for referrer
+          prisma.transaction.create({
+            data: {
+              userId: referrer.id,
+              type: 'BONUS',
+              amount: 1000.0,
+              status: 'SUCCESSFUL',
+              notes: `Referral Investment Bonus from ${user.phone}`,
+            }
+          }),
+          // Notify referrer
+          prisma.notification.create({
+            data: {
+              userId: referrer.id,
+              message: `You earned 1,000 RWF bonus because your referral (${user.phone}) invested!`,
+            }
+          })
+        );
+      }
+    }
+
+    // Atomic execution
+    await prisma.$transaction(operations);
 
     return NextResponse.json({ message: 'Investment successful' });
   } catch (error) {
