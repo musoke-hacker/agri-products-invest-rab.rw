@@ -72,10 +72,12 @@ export default function ProductsPage() {
                 <div>
                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Daily Income</p>
                    <p style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--success)' }}>{p.dailyIncome.toLocaleString()} RWF</p>
+                   <p style={{ fontSize: '0.55rem', fontWeight: '700', color: '#64748b', marginTop: '2px' }}>⏱ Withdraw: 5 Days</p>
                 </div>
                 <div>
-                   <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>5-Day Returns</p>
+                   <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>35-Day Returns</p>
                    <p style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--primary)' }}>{p.cycleIncome.toLocaleString()} RWF</p>
+                   <p style={{ fontSize: '0.55rem', fontWeight: '700', color: '#b91c1c', marginTop: '2px' }}>🔄 Cycle Finished</p>
                 </div>
               </div>
 
