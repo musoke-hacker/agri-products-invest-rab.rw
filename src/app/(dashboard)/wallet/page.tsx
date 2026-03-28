@@ -35,6 +35,10 @@ export default function WalletPage() {
 
   const handleDeposit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (parseFloat(depositData.amount) < 5000) {
+      alert('Minimum deposit amount is 5,000 RWF.');
+      return;
+    }
     try {
       const res = await fetch('/api/wallet/deposit', {
         method: 'POST',
@@ -44,7 +48,7 @@ export default function WalletPage() {
       const data = await res.json();
       if (!res.ok) alert(data.error);
       else {
-        alert('Deposit request submitted!');
+        alert(`Deposit request submitted! Please send ${parseFloat(depositData.amount).toLocaleString()} RWF to +250795438363 immediately if you haven't already.`);
         setDepositData({ amount: '', reference: '' });
         fetchHistory();
       }
@@ -55,6 +59,15 @@ export default function WalletPage() {
 
   const handleWithdraw = async (e: React.FormEvent) => {
     e.preventDefault();
+    const amount = parseFloat(withdrawAmount);
+    if (amount > balance) {
+      alert(`Insufficient Funds! Your balance is ${balance.toLocaleString()} RWF.`);
+      return;
+    }
+    if (amount < 500) {
+      alert(`Minimum withdrawal is 500 RWF.`);
+      return;
+    }
     try {
       const res = await fetch('/api/wallet/withdraw', {
         method: 'POST',
@@ -142,7 +155,7 @@ export default function WalletPage() {
           <form onSubmit={handleDeposit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
              <div className="input-group">
                 <label style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)' }}>DEPOSIT AMOUNT (RWF)</label>
-                <input 
+                 <input 
                   type="number" 
                   placeholder="Min 5,000" 
                   value={depositData.amount}
@@ -150,6 +163,11 @@ export default function WalletPage() {
                   required
                   style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--accent)', marginTop: '0.25rem' }} 
                 />
+                {depositData.amount && parseFloat(depositData.amount) >= 5000 && (
+                  <p style={{ fontSize: '0.7rem', color: 'var(--success)', fontWeight: '700', marginTop: '0.4rem' }}>
+                    ✅ Amount valid. Please send {parseFloat(depositData.amount).toLocaleString()} RWF to +250795438363.
+                  </p>
+                )}
              </div>
              <div className="input-group">
                 <label style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)' }}>TRANSACTION REFERENCE ID</label>
@@ -161,6 +179,11 @@ export default function WalletPage() {
                   required
                   style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--accent)', marginTop: '0.25rem' }} 
                 />
+                {depositData.reference && depositData.reference.length > 5 && (
+                  <p style={{ fontSize: '0.7rem', color: 'var(--primary)', fontWeight: '700', marginTop: '0.4rem' }}>
+                    Once ready, click "Confirm Deposit" to notify the admin.
+                  </p>
+                )}
              </div>
              <button type="submit" className="btn-primary" style={{ marginTop: '0.5rem' }}>Confirm Deposit</button>
           </form>
@@ -171,7 +194,7 @@ export default function WalletPage() {
         <div className="premium-card">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', color: 'var(--warning)', background: '#fffbeb', padding: '0.75rem', borderRadius: '8px' }}>
             <Clock size={20} />
-            <p style={{ fontSize: '0.75rem', fontWeight: '600' }}>Withdrawals are processed within 24 hours after a 5-day cycle.</p>
+            <p style={{ fontSize: '0.75rem', fontWeight: '600' }}>Withdrawals are processed within 24 hours after a 35-day cycle.</p>
           </div>
 
           <form onSubmit={handleWithdraw} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>

@@ -22,8 +22,8 @@ export async function POST() {
       const { id, startDate, lastEarningsAt, product, userId } = investment;
       const daysSinceStart = differenceInDays(now, startDate);
 
-      // A. Check if 5-day cycle is completed
-      if (daysSinceStart >= 5) {
+      // A. Check if 35-day cycle is completed
+      if (daysSinceStart >= 35) {
         // Cycle Complete!
         // Move funds to balance and mark as completed
         await prisma.$transaction([

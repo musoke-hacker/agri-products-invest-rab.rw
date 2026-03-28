@@ -251,8 +251,8 @@ export default function AdminDashboard() {
                </div>
                {tx.status === 'PENDING' && (
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button onClick={() => handleTxAction(tx.id, tx.type, 'SUCCESSFUL')} className="btn-primary" style={{ flex: 1, fontSize: '0.75rem', height: '34px', background: '#16a34a' }}>Approve</button>
-                    <button onClick={() => handleTxAction(tx.id, tx.type, 'REJECTED')} style={{ flex: 1, height: '34px', background: 'transparent', color: '#e11d48', border: '1px solid #e11d48', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700 }}>Reject</button>
+                    <button onClick={() => handleTxAction(tx.id, tx.type, 'SUCCESSFUL')} className="btn-primary" style={{ flex: 1, fontSize: '0.75rem', height: '34px', background: '#16a34a' }}>Approve {tx.type === 'DEPOSIT' ? 'Deposit' : 'Withdrawal'}</button>
+                    <button onClick={() => handleTxAction(tx.id, tx.type, 'REJECTED')} style={{ flex: 1, height: '34px', background: 'transparent', color: '#e11d48', border: '1px solid #e11d48', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 700 }}>Reject {tx.type === 'DEPOSIT' ? 'Deposit' : 'Withdrawal'}</button>
                   </div>
                )}
             </div>
