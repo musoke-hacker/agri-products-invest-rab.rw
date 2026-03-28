@@ -15,6 +15,7 @@ export async function GET() {
             id: true,
             phone: true,
             name: true,
+            profileImage: true,
             role: true
           }
         }

@@ -53,6 +53,7 @@ interface Transaction {
     phone: string;
     id: string;
     name?: string;
+    profileImage?: string;
   }
 }
 
@@ -64,6 +65,7 @@ export default function AdminDashboard() {
   const [processing, setProcessing] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [txFilter, setTxFilter] = useState<'ALL' | 'PENDING' | 'SUCCESSFUL' | 'REJECTED' | 'PROCESSING'>('PENDING');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -139,6 +141,31 @@ export default function AdminDashboard() {
       } else {
         const data = await res.json();
         alert(data.error || 'Failed to process');
+      }
+    } catch (err) {
+      alert('Network error');
+    } finally {
+      setProcessing(null);
+    }
+  };
+
+  const handleDeleteUser = async (id: string, phone: string) => {
+    if (!confirm(`🚨 CRITICAL: Are you sure you want to PERMANENTLY delete client ${phone}? This will erase all their transactions, investments, notifications, and balance. This action cannot be undone.`)) return;
+    
+    setProcessing(id);
+    try {
+      const res = await fetch('/api/admin/users/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: id }),
+      });
+      if (res.ok) {
+        setUsers(prev => prev.filter(u => u.id !== id));
+        if (selectedUser?.id === id) setSelectedUser(null);
+        alert('Client removed successfully');
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to remove client');
       }
     } catch (err) {
       alert('Network error');
@@ -233,15 +260,20 @@ export default function AdminDashboard() {
             <div key={tx.id} className="premium-card" style={{ background: 'white', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                     <div style={{ 
-                       width: '38px', height: '38px', borderRadius: '10px', background: tx.type === 'DEPOSIT' ? '#f0fdf4' : '#fff1f2',
-                       display: 'flex', alignItems: 'center', justifyContent: 'center', color: tx.type === 'DEPOSIT' ? '#16a34a' : '#e11d48'
-                     }}>
-                        {tx.type === 'DEPOSIT' ? <ArrowUpRight /> : <ArrowDownRight />}
+                     <div style={{ width: '42px', height: '42px', borderRadius: '10px', overflow: 'hidden', border: '1.5px solid #f1f5f9', flexShrink: 0 }}>
+                        {tx.user.profileImage ? (
+                           <img src={tx.user.profileImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                           <div style={{ width: '100%', height: '100%', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                              <Users size={20} />
+                           </div>
+                        )}
                      </div>
                      <div>
                         <p style={{ fontWeight: 700, fontSize: '0.9rem' }}>{tx.user.phone}</p>
-                        <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{new Date(tx.createdAt).toLocaleString()}</p>
+                        <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+                           <span style={{ color: tx.type === 'DEPOSIT' ? '#16a34a' : '#e11d48', fontWeight: 800 }}>{tx.type}</span> • {new Date(tx.createdAt).toLocaleString()}
+                        </p>
                      </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
@@ -279,7 +311,10 @@ export default function AdminDashboard() {
                 {filteredUsers.map(u => (
                   <tr key={u.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                     <td style={{ padding: '0.5rem 1rem' }}>
-                      <div style={{ width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden', background: '#f1f5f9', border: '1px solid #e2e8f0' }}>
+                      <div 
+                        onClick={() => setSelectedUser(u)}
+                        style={{ width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden', background: '#f1f5f9', border: '1px solid #e2e8f0', cursor: 'pointer' }}
+                      >
                         {u.profileImage ? (
                           <img src={u.profileImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
@@ -297,7 +332,21 @@ export default function AdminDashboard() {
                     <td style={{ padding: '1rem', fontSize: '0.85rem' }}>{u.totalInvestment.toLocaleString()}</td>
                     <td style={{ padding: '1rem', fontSize: '0.8rem' }}><code style={{background: '#f1f5f9', padding: '2px 5px', borderRadius: '4px'}}>{u.referralCode}</code></td>
                     <td style={{ padding: '1rem' }}>
-                      <button style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer' }}><Eye size={18} /></button>
+                      <div style={{ display: 'flex', gap: '0.4rem' }}>
+                        <button 
+                          onClick={() => setSelectedUser(u)}
+                          style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer' }}
+                        >
+                          <Eye size={18} />
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteUser(u.id, u.phone)}
+                          disabled={!!processing}
+                          style={{ background: 'none', border: 'none', color: '#e11d48', cursor: 'pointer', opacity: processing === u.id ? 0.5 : 1 }}
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -375,8 +424,93 @@ export default function AdminDashboard() {
         </div>
       )}
 
+      {/* CLIENT DETAIL MODAL */}
+      {selectedUser && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
+          padding: '1rem'
+        }} onClick={() => setSelectedUser(null)}>
+          <div className="premium-card" style={{ 
+            background: 'white', width: '100%', maxWidth: '450px', 
+            borderRadius: '24px', overflow: 'hidden',
+            animation: 'modalFadeUp 0.3s ease-out'
+          }} onClick={e => e.stopPropagation()}>
+            <div style={{ position: 'relative', height: '140px', background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)' }}>
+               <button 
+                 onClick={() => setSelectedUser(null)}
+                 style={{ 
+                   position: 'absolute', top: '15px', right: '15px', 
+                   background: 'rgba(255,255,255,0.2)', border: 'none', 
+                   color: 'white', width: '30px', height: '30px', borderRadius: '15px',
+                   cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                 }}
+               >
+                 <LogOut size={16} />
+               </button>
+            </div>
+            
+            <div style={{ padding: '0 2rem 2rem', marginTop: '-60px', position: 'relative', textAlign: 'center' }}>
+               <div style={{ 
+                 width: '120px', height: '120px', borderRadius: '40px', 
+                 margin: '0 auto 1.5rem', overflow: 'hidden', 
+                 border: '6px solid white', background: '#f8fafc',
+                 boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+               }}>
+                 {selectedUser.profileImage ? (
+                   <img src={selectedUser.profileImage} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                 ) : (
+                   <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', color: 'var(--text-muted)' }}>
+                     <Users size={48} />
+                   </div>
+                 )}
+               </div>
+               
+               <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.25rem' }}>{selectedUser.name || 'Anonymous Client'}</h2>
+               <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>{selectedUser.phone}</p>
+               
+               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+                  <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '16px', textAlign: 'left' }}>
+                     <p style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '0.25rem' }}>TOTAL BALANCE</p>
+                     <p style={{ fontWeight: 800, color: 'var(--primary)', fontSize: '1.1rem' }}>{selectedUser.balance.toLocaleString()} <span style={{fontSize: '0.6rem'}}>RWF</span></p>
+                  </div>
+                  <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '16px', textAlign: 'left' }}>
+                     <p style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '0.25rem' }}>TOTAL INVESTED</p>
+                     <p style={{ fontWeight: 800, fontSize: '1.1rem' }}>{selectedUser.totalInvestment.toLocaleString()} <span style={{fontSize: '0.6rem'}}>RWF</span></p>
+                  </div>
+               </div>
+               
+               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                 <button 
+                   onClick={() => setSelectedUser(null)}
+                   className="btn-primary" 
+                   style={{ width: '100%', height: '48px', borderRadius: '14px' }}
+                 >
+                   Back to Dashboard
+                 </button>
+                 <button 
+                   onClick={() => handleDeleteUser(selectedUser.id, selectedUser.phone)}
+                   style={{ 
+                     width: '100%', height: '48px', borderRadius: '14px',
+                     background: 'transparent', color: '#e11d48', border: '1px solid #e11d48',
+                     fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'
+                   }}
+                 >
+                   <Trash2 size={16} /> Delete Permanent Account
+                 </button>
+               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes modalFadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         .spin { animation: spin 1s linear infinite; }
         .premium-card { box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; }
       `}</style>
