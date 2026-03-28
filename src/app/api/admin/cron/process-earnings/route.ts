@@ -25,33 +25,16 @@ export async function POST() {
       // A. Check if 35-day cycle is completed
       if (daysSinceStart >= 35) {
         // Cycle Complete!
-        // Move funds to balance and mark as completed
+        // Just mark as completed, no capital return
         await prisma.$transaction([
           prisma.investment.update({
             where: { id },
             data: { status: 'Completed', cycleCount: { increment: 1 } }
           }),
-          prisma.user.update({
-            where: { id: userId },
-            data: { 
-              balance: { increment: investment.amount }, // Refund capital? Or just capital+profits?
-              // Standard model: Daily income was already added daily. 
-              // At the end, we refund the initial capital (investment.amount).
-            }
-          }),
-          prisma.transaction.create({
-            data: {
-              userId,
-              type: 'BONUS',
-              amount: investment.amount,
-              status: 'SUCCESSFUL',
-              notes: `Investment cycle completed: Capital returned for ${product.name}`,
-            }
-          }),
           prisma.notification.create({
             data: {
               userId,
-              message: `Cycle completed for ${product.name}! Your capital of ${investment.amount} RWF has been returned to your wallet.`,
+              message: `Investment cycle completed for ${product.name}. Thank you for investing!`,
             }
           })
         ]);

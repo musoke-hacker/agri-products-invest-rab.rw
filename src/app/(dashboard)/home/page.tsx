@@ -86,10 +86,10 @@ export default function HomePage() {
           </div>
           <button 
              onClick={handleCheckIn}
-             disabled={checkingIn || stats?.checkInCount >= 5}
+             disabled={checkingIn}
              style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', padding: '0.6rem 1rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: '700', alignSelf: 'flex-start' }}
           >
-            {stats?.checkInCount >= 5 ? 'Check-in Done' : 'Daily Check-in'}
+            {checkingIn ? '...' : 'Daily Check-in'}
           </button>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '1.25rem' }}>

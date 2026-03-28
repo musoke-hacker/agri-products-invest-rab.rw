@@ -64,8 +64,8 @@ export default function WalletPage() {
       alert(`Insufficient Funds! Your balance is ${balance.toLocaleString()} RWF.`);
       return;
     }
-    if (amount < 500) {
-      alert(`Minimum withdrawal is 500 RWF.`);
+    if (amount < 2000) {
+      alert(`Minimum withdrawal is 2000 RWF.`);
       return;
     }
     try {
@@ -194,7 +194,7 @@ export default function WalletPage() {
         <div className="premium-card">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', color: 'var(--warning)', background: '#fffbeb', padding: '0.75rem', borderRadius: '8px' }}>
             <Clock size={20} />
-            <p style={{ fontSize: '0.75rem', fontWeight: '600' }}>Withdrawals are processed within 24 hours after a 35-day cycle.</p>
+            <p style={{ fontSize: '0.75rem', fontWeight: '600' }}>Withdrawals are processed within 24 hours. Frequency: Once every 5 days.</p>
           </div>
 
           <form onSubmit={handleWithdraw} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -202,15 +202,23 @@ export default function WalletPage() {
                 <label style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)' }}>WITHDRAW AMOUNT (RWF)</label>
                 <input 
                   type="number" 
-                  placeholder="Min 500" 
+                  placeholder="Min 2,000" 
                   value={withdrawAmount}
                   onChange={(e) => setWithdrawAmount(e.target.value)}
                   required
                   style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--accent)', marginTop: '0.25rem' }} 
                 />
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                   <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Withdrawal Fee: <span style={{fontWeight: 700}}>10%</span></p>
+                   {withdrawAmount && parseFloat(withdrawAmount) >= 2000 && (
+                     <p style={{ fontSize: '0.7rem', color: 'var(--success)', fontWeight: 700 }}>
+                       You will receive: {(parseFloat(withdrawAmount) * 0.9).toLocaleString()} RWF
+                     </p>
+                   )}
+                </div>
              </div>
              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
-                Funds will be sent to your registered number.
+                Funds will be sent to your registered number after approval.
              </div>
              <button type="submit" className="btn-primary">Request Withdrawal</button>
           </form>

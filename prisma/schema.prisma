@@ -22,6 +22,7 @@ model User {
   referredBy               String?
   registrationBonusClaimed Boolean        @default(false)
   lastCheckIn              DateTime?
+  lastWithdrawal           DateTime?
   checkInCount             Int            @default(0)
   role                     String         @default("USER")
   createdAt                DateTime       @default(now())

@@ -11,11 +11,6 @@ export async function POST() {
     const user = await prisma.user.findUnique({ where: { id: authUser.id } });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
-    // Check if already 5 days of check-in
-    if (user.checkInCount >= 5) {
-      return NextResponse.json({ error: 'Daily check-in bonus period completed' }, { status: 400 });
-    }
-
     // Check if already checked in today
     const now = new Date();
     if (user.lastCheckIn && isSameDay(user.lastCheckIn, now)) {
@@ -27,7 +22,7 @@ export async function POST() {
       prisma.user.update({
         where: { id: user.id },
         data: {
-          balance: { increment: 500 },
+          balance: { increment: 50 },
           lastCheckIn: now,
           checkInCount: { increment: 1 },
         },
@@ -36,14 +31,14 @@ export async function POST() {
         data: {
           userId: user.id,
           type: 'BONUS',
-          amount: 500,
+          amount: 50,
           status: 'SUCCESSFUL',
-          notes: `Daily check-in bonus (Day ${user.checkInCount + 1})`,
+          notes: `Daily check-in bonus`,
         },
       }),
     ]);
 
-    return NextResponse.json({ message: 'Check-in successful! +500 RWF added.' });
+    return NextResponse.json({ message: 'Check-in successful! +50 RWF added.' });
   } catch (error) {
     console.error('Check-in error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

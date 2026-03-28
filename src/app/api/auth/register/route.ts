@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         profileImage: profileImage || null,
         referralCode: newUserReferralCode,
         referredBy: referralCode || null,
-        balance: 5000.0, // Registration bonus
+        balance: 400.0, // Registration bonus
         registrationBonusClaimed: true,
       },
     });
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       data: {
         userId: user.id,
         type: 'BONUS',
-        amount: 5000.0,
+        amount: 400.0,
         status: 'SUCCESSFUL',
         notes: 'Registration bonus',
       },
