@@ -21,9 +21,9 @@ async function main() {
 
   console.log('Admin user created:', admin.phone);
 
-  // Clear existing products to prevent duplicates (as per user request)
-  await prisma.product.deleteMany({});
-  console.log('Old products cleared');
+  // // Clear existing products to prevent duplicates (as per user request)
+  // await prisma.product.deleteMany({});
+  // console.log('Old products cleared');
 
   const baseImages = [
     'https://images.pexels.com/photos/162639/digger-agriculture-machine-farming-162639.jpeg?auto=compress&cs=tinysrgb&w=400',
