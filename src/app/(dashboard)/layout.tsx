@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Package, Users, Wallet, UserCircle, Award } from 'lucide-react';
@@ -7,6 +8,28 @@ import '@/styles/design-system.css';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [installPrompt, setInstallPrompt] = (useState as any)(null);
+
+  (useEffect as any)(() => {
+    const handler = (e: any) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) {
+      alert('Steps to install:\n1. Open your browser menu (3 dots or share icon)\n2. Tap "Add to Home Screen"\n3. Enjoy high-speed access!');
+      return;
+    }
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setInstallPrompt(null);
+    }
+  };
 
   const tabs = [
     { name: 'Home', path: '/home', icon: Home },
@@ -36,7 +59,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <span>Install Official App for Faster Access</span>
         </div>
         <button 
-          onClick={() => alert('Steps to install:\n1. Open your browser menu (3 dots or share icon)\n2. Tap "Add to Home Screen"\n3. Enjoy high-speed access!')}
+          onClick={handleInstallClick}
           style={{ background: 'white', color: 'var(--primary-dark)', border: 'none', padding: '0.3rem 0.8rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: '800', cursor: 'pointer' }}>
           INSTALL NOW
         </button>
