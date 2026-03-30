@@ -48,7 +48,7 @@ export default function WalletPage() {
       const data = await res.json();
       if (!res.ok) alert(data.error);
       else {
-        alert(`Deposit request submitted! Please send ${parseFloat(depositData.amount).toLocaleString()} RWF to +250795438363 immediately if you haven't already.`);
+        alert(`Deposit request submitted! Please send ${parseFloat(depositData.amount).toLocaleString()} RWF to MTN Mobile Number +250795438363 immediately if you haven't already.`);
         setDepositData({ amount: '', reference: '' });
         fetchHistory();
       }
@@ -143,7 +143,7 @@ export default function WalletPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                    <div style={{ padding: '0.75rem', background: 'white', borderRadius: '8px', border: '1px dashed var(--primary-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
-                         <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Momo Number</p>
+                         <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>MTN Mobile Number</p>
                          <p style={{ fontWeight: '800', fontSize: '1rem' }}>+250795438363</p>
                          <p style={{ fontSize: '0.7rem', color: 'var(--primary)', fontWeight: '600' }}>MUSOKE EDWARD</p>
                       </div>
@@ -178,7 +178,7 @@ export default function WalletPage() {
                 />
                 {depositData.amount && parseFloat(depositData.amount) >= 5000 && (
                   <p style={{ fontSize: '0.7rem', color: 'var(--success)', fontWeight: '700', marginTop: '0.4rem' }}>
-                    ✅ Amount valid. Please send {parseFloat(depositData.amount).toLocaleString()} RWF to +250795438363.
+                    ✅ Amount valid. Please send {parseFloat(depositData.amount).toLocaleString()} RWF to MTN Mobile Number +250795438363.
                   </p>
                 )}
              </div>
