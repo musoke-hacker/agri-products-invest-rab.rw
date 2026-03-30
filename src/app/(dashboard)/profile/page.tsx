@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, FileText, Info, LogOut, ChevronRight, Settings } from 'lucide-react';
+import { Shield, FileText, Info, LogOut, ChevronRight, Settings, Headphones } from 'lucide-react';
 import '@/styles/design-system.css';
 
 export default function ProfilePage() {
@@ -90,6 +90,17 @@ export default function ProfilePage() {
            </div>
          )}
          
+         <div 
+           onClick={() => router.push('/support')}
+           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', borderBottom: '1px solid #f1f1f1', cursor: 'pointer' }}
+         >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--primary-dark)' }}>
+               <Headphones size={20} />
+               <span style={{ fontSize: '0.9rem', fontWeight: '700' }}>Customer Support Helpdesk</span>
+            </div>
+            <ChevronRight size={18} color="var(--primary-dark)" />
+         </div>
+
          <div 
            onClick={handleLogout}
            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', cursor: 'pointer' }}

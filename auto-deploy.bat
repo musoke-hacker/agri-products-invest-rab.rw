@@ -9,7 +9,7 @@ git config --global user.name "musoke-hacker"
 echo 🚀 Starting Automatic Git Deployment...
 git init
 git add .
-git commit -m "✅ Update: official website link, username field, phone verification, Airtel Pay code 308571"
+git commit -m "✅ Add Admin Customer Support Chat & Activity features"
 git branch -M main
 git remote set-url origin https://github.com/musoke-hacker/agri-products-invest-rab.rw.git || git remote add origin https://github.com/musoke-hacker/agri-products-invest-rab.rw.git
 git push origin main --force
