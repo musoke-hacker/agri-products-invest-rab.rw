@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Bell, TrendingUp, Wallet, Award, Clock, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { Bell, TrendingUp, Wallet, Award, Clock, ChevronRight, CheckCircle2, Globe } from 'lucide-react';
 import '@/styles/design-system.css';
 
 export default function HomePage() {
@@ -142,24 +142,24 @@ export default function HomePage() {
         <strong>DISCLAIMER:</strong> Product prices and earnings may change anytime depending on market conditions and platform decisions.
       </div>
 
-      {/* Community Section */}
+      {/* Official Website Section */}
       <div style={{ background: 'white', border: '1px solid var(--border)', padding: '1.25rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ background: '#25D366', padding: '0.6rem', borderRadius: '12px' }}>
-             <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.01-1.24-.148-1.314l-.643-.322Z"/></svg>
+          <div style={{ background: 'var(--primary)', padding: '0.6rem', borderRadius: '12px' }}>
+             <Globe size={24} color="white" />
           </div>
           <div style={{ flex: 1 }}>
-            <p style={{ fontSize: '0.9rem', fontWeight: '800', color: 'var(--primary-dark)' }}>Join our WhatsApp Community</p>
-            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Get updates & support on WhatsApp</p>
+            <p style={{ fontSize: '0.9rem', fontWeight: '800', color: 'var(--primary-dark)' }}>Visit Our Official Website</p>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Get more details & official announcements</p>
           </div>
           <a 
-            href="https://chat.whatsapp.com/KW5LhHKUXvxHnnbuWDnZTB" 
+            href="https://agriproducts-invest-exchange.mystrikingly.com" 
             target="_blank" 
             rel="noopener noreferrer"
             className="btn-primary"
-            style={{ width: 'auto', padding: '0.6rem 1.25rem', borderRadius: '12px', background: '#25D366', border: 'none', color: 'white', textDecoration: 'none', fontSize: '0.8rem', fontWeight: '700' }}
+            style={{ width: 'auto', padding: '0.6rem 1.25rem', borderRadius: '12px', background: 'var(--primary)', border: 'none', color: 'white', textDecoration: 'none', fontSize: '0.8rem', fontWeight: '700' }}
           >
-            Join
+            Visit Website
           </a>
         </div>
       </div>

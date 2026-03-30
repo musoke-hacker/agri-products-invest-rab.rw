@@ -140,16 +140,29 @@ export default function WalletPage() {
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
               Send Mobile Money to the official number below. After sending, enter the amount and transaction reference ID.
             </p>
-            <div style={{ marginTop: '1rem', padding: '1rem', background: 'white', borderRadius: '8px', border: '1px dashed var(--primary-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-               <div>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Momo Number</p>
-                  <p style={{ fontWeight: '800', fontSize: '1rem' }}>+250795438363</p>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--primary)', fontWeight: '600' }}>MUSOKE EDWARD</p>
-               </div>
-               <button onClick={() => copyToClipboard('+250795438363')} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer' }}>
-                 {copied ? <Check size={20} /> : <Copy size={20} />}
-               </button>
-            </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                   <div style={{ padding: '0.75rem', background: 'white', borderRadius: '8px', border: '1px dashed var(--primary-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                         <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Momo Number</p>
+                         <p style={{ fontWeight: '800', fontSize: '1rem' }}>+250795438363</p>
+                         <p style={{ fontSize: '0.7rem', color: 'var(--primary)', fontWeight: '600' }}>MUSOKE EDWARD</p>
+                      </div>
+                      <button onClick={() => copyToClipboard('+250795438363')} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer' }}>
+                        {copied ? <Check size={20} /> : <Copy size={20} />}
+                      </button>
+                   </div>
+                   
+                   <div style={{ padding: '0.75rem', background: 'white', borderRadius: '8px', border: '1px dashed #f97316', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                         <p style={{ fontSize: '0.7rem', color: '#ea580c' }}>Airtel Momo Pay Code</p>
+                         <p style={{ fontWeight: '800', fontSize: '1rem', color: '#ea580c' }}>308571</p>
+                         <p style={{ fontSize: '0.7rem', color: '#9a3412', fontWeight: '600' }}>EDDY</p>
+                      </div>
+                      <button onClick={() => copyToClipboard('308571')} style={{ background: 'none', border: 'none', color: '#ea580c', cursor: 'pointer' }}>
+                        {copied ? <Check size={20} /> : <Copy size={20} />}
+                      </button>
+                   </div>
+                </div>
           </div>
 
           <form onSubmit={handleDeposit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>

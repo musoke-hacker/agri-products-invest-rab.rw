@@ -6,11 +6,20 @@ import { cookies } from 'next/headers';
 
 export async function POST(req: NextRequest) {
   try {
-    const { phone: rawPhone, countryCode, password, referralCode, profileImage } = await req.json();
+    const { phone: rawPhone, countryCode, password, referralCode, profileImage, name, verificationCode } = await req.json();
     const phone = rawPhone?.trim();
 
-    if (!phone || !countryCode || !password) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!phone || !countryCode || !password || !name || !verificationCode) {
+      return NextResponse.json({ error: 'Missing required fields (Username, Phone, Password, Code)' }, { status: 400 });
+    }
+
+    // Check verification code
+    const verification = await prisma.verification.findUnique({
+      where: { phone },
+    });
+
+    if (!verification || verification.code !== verificationCode || verification.expiresAt < new Date()) {
+      return NextResponse.json({ error: 'Invalid or expired verification code' }, { status: 400 });
     }
 
     // Check if user already exists
@@ -24,6 +33,9 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Delete verification record
+    await prisma.verification.delete({ where: { phone } });
+
     // Generate unique referral code for the new user
     const newUserReferralCode = `AGRI${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
@@ -31,6 +43,7 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.create({
       data: {
         phone,
+        name,
         countryCode,
         password: hashedPassword,
         profileImage: profileImage || null,

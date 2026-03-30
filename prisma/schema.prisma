@@ -91,3 +91,11 @@ model Setting {
   key   String @unique
   value String
 }
+
+model Verification {
+  id        String   @id @default(cuid())
+  phone     String   @unique
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

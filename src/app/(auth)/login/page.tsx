@@ -213,12 +213,12 @@ export default function LoginPage() {
 
           <div style={{ marginTop: '1.5rem', borderTop: '1px solid #f1f1f1', paddingTop: '1rem', textAlign: 'center' }}>
             <a 
-              href="https://agri-invest-exchange-with-rab-rdb-rwanda.mystrikingly.com" 
+              href="https://agriproducts-invest-exchange.mystrikingly.com" 
               target="_blank" 
               rel="noopener noreferrer"
               style={{ color: 'var(--primary)', fontSize: '0.75rem', fontWeight: '600', textDecoration: 'none' }}
             >
-              🌐 Visit Official Developer Website
+              🌐 Visit Our Official Website
             </a>
           </div>
         </div>

@@ -126,7 +126,7 @@ export default function ProfilePage() {
                   <Settings size={24} /> Account Settings
                 </h2>
                 <div style={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.3rem' }}>Full Name</label>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.3rem' }}>Username</label>
                   <input readOnly type="text" value={user?.name || 'Not Set'} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: '#f9f9f9' }} />
                 </div>
                 <div style={{ marginBottom: '1rem' }}>
@@ -180,12 +180,12 @@ export default function ProfilePage() {
                   
                   <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                     <a 
-                      href="https://agri-invest-exchange-with-rab-rdb-rwanda.mystrikingly.com" 
+                      href="https://agriproducts-invest-exchange.mystrikingly.com" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       style={{ color: 'var(--primary)', fontWeight: '700', textDecoration: 'none', fontSize: '0.85rem' }}
                     >
-                      Visit Official Website →
+                      Visit Our Official Website →
                     </a>
                   </div>
                 </div>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Phone, Lock, ChevronRight, Globe } from 'lucide-react';
+import { Phone, Lock, ChevronRight, Globe, User, ShieldCheck } from 'lucide-react';
 import '@/styles/design-system.css';
 
 const countries = [
@@ -17,14 +17,19 @@ const countries = [
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
+    name: '',
     phone: '',
     countryCode: '250',
     password: '',
     referralCode: '',
     profileImage: '',
+    verificationCode: '',
   });
   const [loading, setLoading] = useState(false);
+  const [sendingCode, setSendingCode] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const router = useRouter();
 
   const handleImageCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,8 +43,41 @@ export default function RegisterPage() {
     }
   };
 
+  const sendVerificationCode = async () => {
+    if (!formData.phone) {
+      setError('Please enter your phone number first.');
+      return;
+    }
+    setSendingCode(true);
+    setError('');
+    try {
+      const res = await fetch('/api/auth/send-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: formData.phone }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      
+      setCodeSent(true);
+      setSuccess('Verification code sent to your phone!');
+      if (data.debugCode) {
+        console.log('DEBUG: Verification code is', data.debugCode);
+        setSuccess(`Code sent! (Debug: ${data.debugCode})`);
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSendingCode(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!codeSent) {
+      setError('Please verify your phone number first.');
+      return;
+    }
     setLoading(true);
     setError('');
 
@@ -65,7 +103,7 @@ export default function RegisterPage() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(160deg, #083d22 0%, #1b5e38 40%, #f0fdf4 100%)' }}>
 
       {/* TOP HERO SECTION - Team Photo */}
-      <div style={{ position: 'relative', width: '100%', height: '180px', overflow: 'hidden', flexShrink: 0 }}>
+      <div style={{ position: 'relative', width: '100%', height: '160px', overflow: 'hidden', flexShrink: 0 }}>
         <img
           src="/agroforestry-team.png"
           alt="International Support - World Bank, RAB & MINAGRI"
@@ -82,27 +120,6 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* PARTNER FLAGS ROW */}
-      <div style={{ background: 'white', padding: '0.6rem 1rem', boxShadow: '0 2px 12px rgba(0,0,0,0.12)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', gap: '0.4rem' }}>
-          {[
-            { src: 'https://flagcdn.com/w80/rw.png', label: 'Rwanda' },
-            { src: 'https://flagcdn.com/w80/ug.png', label: 'Uganda' },
-            { src: 'https://flagcdn.com/w80/ke.png', label: 'Kenya' },
-            { src: 'https://flagcdn.com/w80/tz.png', label: 'Tanzania' },
-            { src: 'https://flagcdn.com/w80/bi.png', label: 'Burundi' },
-            { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/World_Bank_logo.svg/120px-World_Bank_logo.svg.png', label: 'World Bank', isLogo: true },
-          ].map((p) => (
-            <div key={p.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-              <div style={{ width: '36px', height: '24px', borderRadius: '3px', overflow: 'hidden', border: '1px solid #e5e7eb', background: '#f9fafb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src={p.src} alt={p.label} style={{ width: (p as any).isLogo ? '90%' : '100%', height: (p as any).isLogo ? 'auto' : '100%', objectFit: (p as any).isLogo ? 'contain' : 'cover' }} />
-              </div>
-              <span style={{ fontSize: '0.5rem', fontWeight: '600', color: 'var(--text-muted)' }}>{p.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* FORM AREA */}
       <div style={{ flex: 1, padding: '1.25rem' }}>
         <div style={{ background: 'white', borderRadius: '20px', padding: '1.5rem', boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}>
@@ -112,6 +129,7 @@ export default function RegisterPage() {
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         {error && <div style={{ background: '#fee2e2', color: '#ef4444', padding: '0.75rem', borderRadius: '8px', fontSize: '0.85rem' }}>{error}</div>}
+        {success && <div style={{ background: '#dcfce7', color: '#16a34a', padding: '0.75rem', borderRadius: '8px', fontSize: '0.85rem' }}>{success}</div>}
         
         <div className="input-group">
           <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>UPLOAD PROFILE PICTURE</label>
@@ -133,34 +151,75 @@ export default function RegisterPage() {
         </div>
 
         <div className="input-group">
-          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>SELECT COUNTRY</label>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <select 
-              value={formData.countryCode}
-              onChange={(e) => setFormData({...formData, countryCode: e.target.value})}
-              style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--accent)', background: 'white', flex: '1' }}
-            >
-              {countries.map(c => (
-                <option key={c.code} value={c.code}>{c.flag} {c.name} (+{c.code})</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="input-group">
-          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>PHONE NUMBER</label>
+          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>USERNAME</label>
           <div style={{ position: 'relative' }}>
-            <Phone size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <User size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input 
-              type="tel"
-              placeholder="Enter mobile money number"
-              value={formData.phone}
-              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              type="text"
+              placeholder="Enter your full name as username"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
               required
               style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid var(--accent)', fontSize: '1rem' }}
             />
           </div>
         </div>
+
+        <div className="input-group">
+          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>PHONE NUMBER</label>
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+            <select 
+              value={formData.countryCode}
+              onChange={(e) => setFormData({...formData, countryCode: e.target.value})}
+              style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--accent)', background: 'white', flex: '0.4' }}
+            >
+              {countries.map(c => (
+                <option key={c.code} value={c.code}>{c.flag} +{c.code}</option>
+              ))}
+            </select>
+            <div style={{ position: 'relative', flex: '1' }}>
+              <Phone size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input 
+                type="tel"
+                placeholder="Mobile number"
+                value={formData.phone}
+                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                required
+                style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1px solid var(--accent)', fontSize: '1rem' }}
+              />
+            </div>
+          </div>
+          <button 
+            type="button"
+            onClick={sendVerificationCode}
+            disabled={sendingCode || !formData.phone}
+            style={{ 
+              width: '100%', padding: '0.6rem', background: codeSent ? '#f0fdf4' : 'var(--accent)', 
+              color: codeSent ? '#16a34a' : 'var(--primary-dark)', border: 'none', 
+              borderRadius: '8px', fontSize: '0.75rem', fontWeight: '700', cursor: 'pointer' 
+            }}
+          >
+            {sendingCode ? 'Sending Code...' : codeSent ? 'Code Sent (Resend?)' : 'Send Verification Code'}
+          </button>
+        </div>
+
+        {codeSent && (
+          <div className="input-group">
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>VERIFICATION CODE</label>
+            <div style={{ position: 'relative' }}>
+              <ShieldCheck size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input 
+                type="text"
+                placeholder="Enter 4-digit code"
+                value={formData.verificationCode}
+                onChange={(e) => setFormData({...formData, verificationCode: e.target.value})}
+                required
+                maxLength={4}
+                style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1.5px solid var(--primary)', fontSize: '1.2rem', fontWeight: '800', letterSpacing: '0.5rem', textAlign: 'center' }}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="input-group">
           <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>PASSWORD</label>
@@ -188,7 +247,7 @@ export default function RegisterPage() {
           />
         </div>
 
-        <button type="submit" disabled={loading} className="btn-primary" style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', borderRadius: '12px' }}>
+        <button type="submit" disabled={loading || !codeSent} className="btn-primary" style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', borderRadius: '12px', opacity: (loading || !codeSent) ? 0.7 : 1 }}>
           {loading ? 'Creating Account...' : 'Register Now'}
           {!loading && <ChevronRight size={18} />}
         </button>
@@ -197,6 +256,18 @@ export default function RegisterPage() {
           Already have an account? <Link href="/login" style={{ color: 'var(--primary)', fontWeight: '700', textDecoration: 'none' }}>Login</Link>
         </p>
       </form>
+
+      <div style={{ marginTop: '1.5rem', borderTop: '1px solid #f1f1f1', paddingTop: '1rem', textAlign: 'center' }}>
+            <a 
+              href="https://agriproducts-invest-exchange.mystrikingly.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: 'var(--primary)', fontSize: '0.75rem', fontWeight: '600', textDecoration: 'none' }}
+            >
+              🌐 Visit Our Official Website
+            </a>
+          </div>
+
         </div>
       </div>
 
