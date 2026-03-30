@@ -78,6 +78,14 @@ export default function RegisterPage() {
       setError('Please verify your phone number first.');
       return;
     }
+    if (!formData.profileImage) {
+      setError('A profile picture is required to register.');
+      return;
+    }
+    if (!formData.name) {
+      setError('Your registered MoMo username is required.');
+      return;
+    }
     setLoading(true);
     setError('');
 
@@ -132,7 +140,7 @@ export default function RegisterPage() {
         {success && <div style={{ background: '#dcfce7', color: '#16a34a', padding: '0.75rem', borderRadius: '8px', fontSize: '0.85rem' }}>{success}</div>}
         
         <div className="input-group">
-          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>UPLOAD PROFILE PICTURE</label>
+          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>UPLOAD PROFILE PICTURE *</label>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#f8faf9', padding: '0.5rem', borderRadius: '10px', border: '1.5px solid var(--accent)' }}>
             <div style={{ width: '50px', height: '50px', borderRadius: '25px', background: 'var(--accent)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {formData.profileImage ? (
@@ -151,7 +159,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="input-group">
-          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>USERNAME</label>
+          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>USERNAME (REGISTERED ON MOMO) *</label>
           <div style={{ position: 'relative' }}>
             <User size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input 

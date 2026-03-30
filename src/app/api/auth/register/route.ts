@@ -9,8 +9,8 @@ export async function POST(req: NextRequest) {
     const { phone: rawPhone, countryCode, password, referralCode, profileImage, name, verificationCode } = await req.json();
     const phone = rawPhone?.trim();
 
-    if (!phone || !countryCode || !password || !name || !verificationCode) {
-      return NextResponse.json({ error: 'Missing required fields (Username, Phone, Password, Code)' }, { status: 400 });
+    if (!phone || !countryCode || !password || !name || !verificationCode || !profileImage) {
+      return NextResponse.json({ error: 'Missing required fields (Registered MoMo Username, Phone, Password, Code, Profile Picture)' }, { status: 400 });
     }
 
     // Check verification code
