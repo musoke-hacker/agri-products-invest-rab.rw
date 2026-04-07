@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Phone, Lock, ChevronRight, Globe, User, ShieldCheck } from 'lucide-react';
+import { Phone, Lock, ChevronRight, User } from 'lucide-react';
 import '@/styles/design-system.css';
 
 const countries = [
@@ -23,11 +23,8 @@ export default function RegisterPage() {
     password: '',
     referralCode: '',
     profileImage: '',
-    verificationCode: '',
   });
   const [loading, setLoading] = useState(false);
-  const [sendingCode, setSendingCode] = useState(false);
-  const [codeSent, setCodeSent] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
@@ -43,41 +40,8 @@ export default function RegisterPage() {
     }
   };
 
-  const sendVerificationCode = async () => {
-    if (!formData.phone) {
-      setError('Please enter your phone number first.');
-      return;
-    }
-    setSendingCode(true);
-    setError('');
-    try {
-      const res = await fetch('/api/auth/send-code', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: formData.phone }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      
-      setCodeSent(true);
-      setSuccess('Verification code sent to your phone!');
-      if (data.debugCode) {
-        console.log('DEBUG: Verification code is', data.debugCode);
-        setSuccess(`Code sent! (Debug: ${data.debugCode})`);
-      }
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setSendingCode(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!codeSent) {
-      setError('Please verify your phone number first.');
-      return;
-    }
     if (!formData.profileImage) {
       setError('A profile picture is required to register.');
       return;
@@ -197,37 +161,7 @@ export default function RegisterPage() {
               />
             </div>
           </div>
-          <button 
-            type="button"
-            onClick={sendVerificationCode}
-            disabled={sendingCode || !formData.phone}
-            style={{ 
-              width: '100%', padding: '0.6rem', background: codeSent ? '#f0fdf4' : 'var(--accent)', 
-              color: codeSent ? '#16a34a' : 'var(--primary-dark)', border: 'none', 
-              borderRadius: '8px', fontSize: '0.75rem', fontWeight: '700', cursor: 'pointer' 
-            }}
-          >
-            {sendingCode ? 'Sending Code...' : codeSent ? 'Code Sent (Resend?)' : 'Send Verification Code'}
-          </button>
         </div>
-
-        {codeSent && (
-          <div className="input-group">
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>VERIFICATION CODE</label>
-            <div style={{ position: 'relative' }}>
-              <ShieldCheck size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-              <input 
-                type="text"
-                placeholder="Enter 4-digit code"
-                value={formData.verificationCode}
-                onChange={(e) => setFormData({...formData, verificationCode: e.target.value})}
-                required
-                maxLength={4}
-                style={{ width: '100%', padding: '0.75rem 0.75rem 0.75rem 2.5rem', borderRadius: '8px', border: '1.5px solid var(--primary)', fontSize: '1.2rem', fontWeight: '800', letterSpacing: '0.5rem', textAlign: 'center' }}
-              />
-            </div>
-          </div>
-        )}
 
         <div className="input-group">
           <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>PASSWORD</label>
@@ -255,7 +189,7 @@ export default function RegisterPage() {
           />
         </div>
 
-        <button type="submit" disabled={loading || !codeSent} className="btn-primary" style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', borderRadius: '12px', opacity: (loading || !codeSent) ? 0.7 : 1 }}>
+        <button type="submit" disabled={loading} className="btn-primary" style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', borderRadius: '12px', opacity: loading ? 0.7 : 1 }}>
           {loading ? 'Creating Account...' : 'Register Now'}
           {!loading && <ChevronRight size={18} />}
         </button>
@@ -264,17 +198,6 @@ export default function RegisterPage() {
           Already have an account? <Link href="/login" style={{ color: 'var(--primary)', fontWeight: '700', textDecoration: 'none' }}>Login</Link>
         </p>
       </form>
-
-      <div style={{ marginTop: '1.5rem', borderTop: '1px solid #f1f1f1', paddingTop: '1rem', textAlign: 'center' }}>
-            <a 
-              href="https://agriproducts-invest-exchange.mystrikingly.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={{ color: 'var(--primary)', fontSize: '0.75rem', fontWeight: '600', textDecoration: 'none' }}
-            >
-              🌐 Visit Our Official Website
-            </a>
-          </div>
 
         </div>
       </div>

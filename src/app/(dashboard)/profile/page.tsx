@@ -189,16 +189,7 @@ export default function ProfilePage() {
                   <h3 style={{ marginTop: '1.25rem', marginBottom: '0.5rem', color: 'var(--text)', fontSize: '1rem' }}>Our Partners</h3>
                   <p>We are proud to collaborate with <strong>Regional Farmers Cooperatives</strong>, <strong>MTN Mobile Money</strong>, and <strong>Airtel Money</strong> to ensure secure and efficient fund distribution and profit collection.</p>
                   
-                  <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-                    <a 
-                      href="https://agriproducts-invest-exchange.mystrikingly.com" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      style={{ color: 'var(--primary)', fontWeight: '700', textDecoration: 'none', fontSize: '0.85rem' }}
-                    >
-                      Visit Our Official Website →
-                    </a>
-                  </div>
+
                 </div>
                 <button className="btn-primary" style={{ marginTop: '1.5rem', width: '100%' }} onClick={() => setActiveModal(null)}>Close Overview</button>
               </div>

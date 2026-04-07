@@ -142,27 +142,7 @@ export default function HomePage() {
         <strong>DISCLAIMER:</strong> Product prices and earnings may change anytime depending on market conditions and platform decisions.
       </div>
 
-      {/* Official Website Section */}
-      <div style={{ background: 'white', border: '1px solid var(--border)', padding: '1.25rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ background: 'var(--primary)', padding: '0.6rem', borderRadius: '12px' }}>
-             <Globe size={24} color="white" />
-          </div>
-          <div style={{ flex: 1 }}>
-            <p style={{ fontSize: '0.9rem', fontWeight: '800', color: 'var(--primary-dark)' }}>Visit Our Official Website</p>
-            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Get more details & official announcements</p>
-          </div>
-          <a 
-            href="https://agriproducts-invest-exchange.mystrikingly.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="btn-primary"
-            style={{ width: 'auto', padding: '0.6rem 1.25rem', borderRadius: '12px', background: 'var(--primary)', border: 'none', color: 'white', textDecoration: 'none', fontSize: '0.8rem', fontWeight: '700' }}
-          >
-            Visit Website
-          </a>
-        </div>
-      </div>
+
 
       {/* WhatsApp Community Section */}
       <div style={{ background: 'white', border: '1px solid var(--border)', padding: '1.25rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
